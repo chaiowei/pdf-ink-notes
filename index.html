@@ -9,9 +9,9 @@
   <meta name="google" content="notranslate">
   <title>墨頁 Inkpage</title>
   <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
-  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-DehxVcSX.js"></script>
+  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-DS44c8zH.js"></script>
   <link rel="modulepreload" crossorigin href="/pdf-ink-notes/assets/rolldown-runtime-XKyaHtl9.js">
-  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-DyPhhA3s.css">
+  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-CPt8Y6my.css">
 <link rel="manifest" href="/pdf-ink-notes/manifest.webmanifest"></head>
 <body>
   <!-- 書櫃 -->
@@ -228,11 +228,12 @@
   <dialog id="dlg-study" closedby="any" aria-labelledby="dlg-study-title">
     <form method="dialog">
       <h2 id="dlg-study-title">分割學習筆記</h2>
-      <p class="muted">在下方開一份筆記，上方的內容可以拖進去整理。</p>
+      <p class="muted">選擇要在第二個視窗開啟的既有筆記或 PDF。</p>
+      <label class="field">搜尋筆記或資料夾<input id="study-search" type="search" placeholder="輸入名稱搜尋" autocomplete="off"></label>
       <div id="study-options" class="study-options"></div>
       <div class="buttons">
         <button value="cancel" formnovalidate>取消</button>
-        <button value="ok" class="primary">開啟</button>
+        <button id="study-open" value="ok" class="primary">開啟</button>
       </div>
     </form>
   </dialog>
