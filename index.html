@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="zh-Hant" translate="no">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <script>try { const t = localStorage.getItem('pin.theme'); document.querySelector('meta[name="color-scheme"]').content = t === 'system' ? 'light dark' : t === 'light' ? 'light' : 'dark'; } catch {}</script>
+  <meta name="theme-color" content="#1f6feb">
+  <meta name="google" content="notranslate">
+  <title>手寫 PDF 筆記</title>
+  <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
+  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-oz58EBxj.js"></script>
+  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-B2guA6eO.css">
+<link rel="manifest" href="/pdf-ink-notes/manifest.webmanifest"></head>
+<body>
+  <!-- 書櫃 -->
+  <section id="library" class="view" aria-label="書櫃">
+    <header class="topbar">
+      <h1 class="brand">手寫 PDF 筆記</h1>
+      <input id="search" type="search" placeholder="搜尋筆記與資料夾" aria-label="搜尋筆記與資料夾">
+      <div class="actions">
+        <label class="theme-setting">外觀 <select id="theme-setting" aria-label="外觀主題"><option value="dark">深色</option><option value="light">淺色</option><option value="system">跟隨系統</option></select></label>
+        <button type="button" class="primary" command="show-modal" commandfor="dlg-notebook">＋ 筆記本</button>
+        <button type="button" id="btn-import">匯入 PDF</button>
+        <button type="button" id="btn-new-folder">＋ 資料夾</button>
+        <button type="button" id="btn-sync" data-state="off" data-tip="同步到 Google Drive">同步</button>
+        <button type="button" id="btn-drive-settings" aria-label="同步設定" data-tip="同步設定">⚙</button>
+      </div>
+      <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden>
+    </header>
+    <nav class="crumbs" id="crumbs" aria-label="資料夾路徑"></nav>
+    <div class="toolbar">
+      <span id="summary" class="muted"></span>
+      <label class="sort">排序
+        <select id="sort"></select>
+      </label>
+    </div>
+    <main id="grid" class="grid"></main>
+    <p id="empty" class="empty" hidden>這裡還沒有東西。新增筆記本，或把 PDF 拖進來。</p>
+    <footer class="foot muted"><span id="sync-status" role="status" data-state="off"></span><span id="storage"></span></footer>
+  </section>
+
+  <!-- 閱讀頁 -->
+  <section id="reader" class="view" aria-label="筆記" hidden>
+    <header class="topbar reader-bar">
+      <button type="button" id="btn-back" data-tip="回書櫃"><svg class="ic" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h2 id="reader-title" class="reader-title"></h2>
+      <div class="actions">
+        <button type="button" id="zoom-out" data-tip="縮小"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14"/></svg></button>
+        <output id="zoom-label" aria-live="polite">100%</output>
+        <button type="button" id="zoom-in" data-tip="放大"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+        <button type="button" id="zoom-fit" data-tip="符合寬度"><svg class="ic" viewBox="0 0 24 24"><path d="M4 8V5h3M20 8V5h-3M4 16v3h3M20 16v3h-3M8 12h8M8 12l2-2M8 12l2 2M16 12l-2-2M16 12l-2 2"/></svg></button>
+        <button type="button" id="ink-undo" aria-disabled="true" data-tip="復原（Ctrl+Z）"><svg class="ic" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></svg></button>
+        <button type="button" id="ink-redo" aria-disabled="true" data-tip="重做（Ctrl+Y）"><svg class="ic" viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></svg></button>
+        <span id="input-mode" class="seg input-seg" role="radiogroup" aria-label="書寫輸入方式">
+          <button type="button" role="radio" data-input="pen" aria-checked="true" data-tip="只用觸控筆書寫；手指用來捲動、縮放">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/></svg></button>
+          <button type="button" role="radio" data-input="finger" aria-checked="false" data-tip="只用手指書寫（觸控筆不寫字）；兩指捲動、縮放">
+            <svg class="ic" viewBox="0 0 24 24"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V16a5 5 0 0 1-5 5h-1a5 5 0 0 1-4-2l-3-4.5a1.5 1.5 0 0 1 2.3-1.8L9 15z"/></svg></button>
+        </span>
+        <button type="button" id="btn-add-page" data-tip="在後面加一頁" hidden><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M12 11v6M9 14h6"/></svg></button>
+        <button type="button" id="btn-outline" popovertarget="outline-panel" data-tip="書籤、目錄、跳頁"><svg class="ic" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></button>
+        <button type="button" id="btn-export" data-tip="匯出含筆跡的 PDF"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 12v7h14v-7"/></svg></button>
+      </div>
+    </header>
+    <div class="stage">
+      <div id="ink-tools" class="rail" role="toolbar" aria-orientation="vertical" aria-label="書寫工具" aria-controls="pages">
+        <button type="button" id="mode-btn" class="rail-btn mode" aria-pressed="true" data-tip="書寫／瀏覽（手指捲動）切換">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/><path d="M14.5 6.5l3 3"/></svg>
+        </button>
+        <hr class="rail-sep">
+        <div id="pen-list" class="pen-list" role="group" aria-label="筆盒"></div>
+        <button type="button" id="pen-add" class="rail-btn" data-tip="新增一支常用筆（複製目前這支）">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+        <hr class="rail-sep">
+        <button type="button" class="rail-btn" data-tool="lasso" aria-pressed="false" data-tip="套索：圈選後可移動、換色、刪除">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M12 4c4.4 0 8 2.2 8 5s-3.6 5-8 5-8-2.2-8-5 3.6-5 8-5z" stroke-dasharray="3 2.4"/><path d="M8.5 13.5c-1 1.6-.5 3.6 1.2 4.4 1.2.6 2.3.3 2.8 1.6"/></svg>
+        </button>
+        <button type="button" class="rail-btn" data-tool="eraser" aria-pressed="false" data-tip="橡皮擦（再點一次調整大小與模式）">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M9 19h10M5.2 14.8l8.6-8.6a2 2 0 0 1 2.8 0l2.2 2.2a2 2 0 0 1 0 2.8L11.5 19H8.7z"/><path d="M8.7 11.9l5 5"/></svg>
+        </button>
+        <button type="button" class="rail-btn" data-tool="shape" aria-pressed="false" data-tip="形狀：拖曳畫直線、箭頭、矩形、圓、三角形（再點一次換形狀、調粗細顏色）">
+          <svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="10" width="9" height="9" rx="1.5"/><circle cx="15.5" cy="8.5" r="5"/></svg>
+        </button>
+        <button type="button" class="rail-btn" data-tool="text" aria-pressed="false" data-tip="文字：點一下新增文字框（再點一次調整字級與顏色）">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M4 7V5h16v2M12 5v14M9 19h6"/></svg>
+        </button>
+        <button type="button" class="rail-btn" data-tool="check" aria-pressed="false" data-tip="檢核框：點一下新增，點方框打勾">
+          <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.5l3 3 5-6"/></svg>
+        </button>
+        <button type="button" class="rail-btn" id="ink-image" data-tip="插入圖片（手機可直接拍照）">
+          <svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3 3-2.5 4.5 4"/></svg>
+        </button>
+        <input type="file" id="image-input" accept="image/*" hidden>
+      </div>
+
+      <div id="selection-actions" class="sel-pill" role="group" aria-label="選取" hidden>
+        <span id="selection-count" class="muted"></span>
+        <span id="sel-colors" class="sel-colors"></span>
+        <button type="button" id="sel-whiten" hidden data-tip="把圖片的白色紙張背景變透明，適合掃描的簽名、手稿">去白底</button>
+        <button type="button" id="sel-delete" class="danger-text">刪除</button>
+        <button type="button" id="sel-clear">取消選取</button>
+      </div>
+
+      <!-- 筆設定面板（筆、橡皮擦、文字共用） -->
+      <div id="pen-popover" class="pop" popover aria-label="工具設定">
+        <section data-for="pen" class="pop-types">
+          <div id="pen-types" class="type-row" role="radiogroup" aria-label="筆型"></div>
+        </section>
+        <section data-for="shape" class="pop-block">
+          <div id="shape-types" class="shape-row" role="radiogroup" aria-label="形狀"></div>
+        </section>
+        <section data-for="pen eraser text shape" class="pop-block">
+          <div class="pop-row">
+            <span id="width-label" class="pop-label">筆刷粗度</span>
+            <span class="stepper">
+              <button type="button" id="width-minus" aria-label="變細">－</button>
+              <output id="width-out"></output>
+              <button type="button" id="width-plus" aria-label="變粗">＋</button>
+            </span>
+          </div>
+          <input type="range" id="ink-width" aria-labelledby="width-label">
+          <canvas id="pen-preview" class="preview" width="560" height="110" data-for="pen" aria-hidden="true"></canvas>
+        </section>
+        <section data-for="eraser" class="pop-block">
+          <div class="seg" role="radiogroup" aria-label="擦除模式">
+            <button type="button" id="eraser-stroke" role="radio">整筆擦除</button>
+            <button type="button" id="eraser-partial" role="radio">局部擦除</button>
+          </div>
+        </section>
+        <section data-for="pen" class="pop-block">
+          <label class="pop-row"><span class="pop-label"><svg class="ic sm" viewBox="0 0 24 24"><path d="M4 19L19 4"/><path d="M4 14l6 6M14 4l6 6"/></svg>直線</span>
+            <input type="checkbox" id="pen-straight" class="switch" role="switch"></label>
+          <div class="pop-row">
+            <span class="pop-label"><svg class="ic sm" viewBox="0 0 24 24"><path d="M3 14c3-8 5 6 9-2s6 4 9-2"/></svg>筆劃穩定</span>
+            <output id="stab-out"></output>
+          </div>
+          <input type="range" id="pen-stab" min="0" max="100" step="5" aria-label="筆劃穩定">
+          <label class="pop-row"><span class="pop-label"><svg class="ic sm" viewBox="0 0 24 24"><rect x="3.5" y="10" width="9" height="9" rx="1.5"/><circle cx="15.5" cy="8.5" r="5"/></svg>圖形校正（停筆自動變形）</span>
+            <input type="checkbox" id="pen-snap" class="switch" role="switch"></label>
+        </section>
+        <section data-for="pen text shape" class="pop-block">
+          <span class="pop-label">基本顏色</span>
+          <div id="basic-colors" class="swatches"></div>
+          <div class="pop-row"><span class="pop-label">我的顏色</span>
+            <label class="add-color" data-tip="新增自訂顏色"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新增<input type="color" id="ink-color-custom" aria-label="新增自訂顏色"></label></div>
+          <div id="my-colors" class="swatches"></div>
+        </section>
+        <section data-for="pen" class="pop-block pop-actions">
+          <button type="button" id="pen-dup">複製這支</button>
+          <button type="button" id="pen-del" class="danger-text">刪除這支筆</button>
+        </section>
+      </div>
+
+      <div id="pages" class="pages" tabindex="-1"></div>
+    </div>
+    <div id="page-indicator" class="page-indicator" aria-live="polite"></div>
+  </section>
+
+  <div id="drop-hint" class="drop-hint" hidden>放開即匯入 PDF</div>
+  <div id="toast" class="toast" popover="manual" role="status"></div>
+
+  <!-- 新增筆記本 -->
+  <dialog id="dlg-notebook" closedby="any" aria-labelledby="dlg-notebook-title">
+    <form method="dialog" id="form-notebook">
+      <h2 id="dlg-notebook-title">新增筆記本</h2>
+      <label class="field">名稱
+        <input name="title" required maxlength="120" autofocus placeholder="例如：TK-401 現場紀錄">
+      </label>
+      <fieldset class="field">
+        <legend>紙張樣式</legend>
+        <div class="tpl-options" id="tpl-styles"></div>
+      </fieldset>
+      <div class="row">
+        <label class="field">尺寸 <select name="size" id="tpl-size"></select></label>
+        <label class="field">方向
+          <select name="orientation">
+            <option value="portrait">直式</option>
+            <option value="landscape">橫式</option>
+          </select>
+        </label>
+        <label class="field">紙色 <select name="color" id="tpl-color"></select></label>
+        <label class="field">頁數 <input name="pageCount" type="number" min="1" max="500" value="10"></label>
+      </div>
+      <div class="buttons">
+        <button value="cancel" formnovalidate>取消</button>
+        <button value="ok" class="primary">建立</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 輸入名稱（新資料夾 / 重新命名） -->
+  <dialog id="dlg-name" closedby="any" aria-labelledby="dlg-name-title">
+    <form method="dialog">
+      <h2 id="dlg-name-title">名稱</h2>
+      <label class="field"><span class="sr-only">名稱</span>
+        <input name="name" required maxlength="120" autofocus>
+      </label>
+      <div class="buttons">
+        <button value="cancel" formnovalidate>取消</button>
+        <button value="ok" class="primary">確定</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 移動 -->
+  <dialog id="dlg-move" closedby="any" aria-labelledby="dlg-move-title">
+    <form method="dialog">
+      <h2 id="dlg-move-title">移動到</h2>
+      <label class="field"><span class="sr-only">目的資料夾</span>
+        <select name="target" id="move-target" size="8"></select>
+      </label>
+      <div class="buttons">
+        <button value="cancel" formnovalidate>取消</button>
+        <button value="ok" class="primary">移動</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 刪除確認 -->
+  <dialog id="dlg-confirm" aria-labelledby="dlg-confirm-title" aria-describedby="dlg-confirm-msg">
+    <form method="dialog">
+      <h2 id="dlg-confirm-title">確定刪除？</h2>
+      <p id="dlg-confirm-msg"></p>
+      <div class="buttons">
+        <button value="cancel" autofocus>保留</button>
+        <button value="ok" class="danger">刪除</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 書籤／目錄（不擋畫面的側邊面板） -->
+  <dialog id="outline-panel" popover aria-labelledby="outline-title" class="side-panel">
+    <div class="panel-head">
+      <h2 id="outline-title">目錄與書籤</h2>
+      <button type="button" popovertarget="outline-panel" popovertargetaction="hide" aria-label="關閉">✕</button>
+    </div>
+    <form id="goto-form" class="goto">
+      <label>跳到第 <input id="goto-page" type="number" min="1" inputmode="numeric" aria-label="頁碼"> 頁</label>
+      <button type="submit">前往</button>
+    </form>
+    <button type="button" id="btn-bookmark" class="wide" aria-pressed="false">☆ 把目前這頁加入書籤</button>
+    <h3>書籤</h3>
+    <ul id="bookmark-list" class="nav-list"></ul>
+    <p id="bookmark-empty" class="muted small">還沒有書籤。</p>
+    <h3 id="toc-heading">PDF 目錄</h3>
+    <div id="toc"></div>
+  </dialog>
+
+  <!-- 匯出 PDF -->
+  <dialog id="dlg-export" closedby="any" aria-labelledby="dlg-export-title">
+    <form method="dialog" id="form-export">
+      <h2 id="dlg-export-title">匯出 PDF</h2>
+      <fieldset class="field">
+        <legend>範圍</legend>
+        <label class="check"><input type="radio" name="scope" value="all" checked> 全部頁面</label>
+        <label class="check"><input type="radio" name="scope" value="current"> 目前這頁</label>
+        <label class="check"><input type="radio" name="scope" value="range"> 指定頁碼
+          <input name="range" id="export-range" placeholder="例如 1-3,5" aria-label="指定頁碼"></label>
+      </fieldset>
+      <p class="muted small">筆跡以向量輸出，放大不會模糊；文字框和圖片以高解析度圖片輸出。</p>
+      <p id="export-progress" class="muted" aria-live="polite"></p>
+      <div class="buttons">
+        <button value="cancel" formnovalidate>取消</button>
+        <button value="share" id="export-share" hidden>分享</button>
+        <button value="save" class="primary">儲存 PDF</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Google Drive 同步設定 -->
+  <dialog id="dlg-drive" closedby="any" aria-labelledby="dlg-drive-title">
+    <h2 id="dlg-drive-title">Google Drive 備份與同步</h2>
+    <p class="muted">筆記會存在你自己的 Google 雲端硬碟「手寫 PDF 筆記（備份）」資料夾。這個 App 只能存取它自己建立的檔案，看不到你雲端硬碟裡的其他東西。</p>
+    <p id="drive-account"></p>
+    <div id="drive-client-wrap">
+      <label class="field">OAuth Client ID
+        <input id="drive-client-id" autocomplete="off" spellcheck="false" placeholder="1234567890-xxxx.apps.googleusercontent.com">
+      </label>
+      <p class="muted small">第一次使用要先在 Google Cloud 建立 Client ID，步驟見專案資料夾的 GOOGLE_DRIVE_SETUP.md。</p>
+      <p id="drive-native-note" class="muted small" hidden>App 版：這裡一樣貼「網頁應用程式」的 Client ID；另外 Google Cloud 要再建一組「Android」Client ID（套件名稱 tw.chiaowei.pdfinknotes＋SHA-1），手機上要先登入 Google 帳號。</p>
+    </div>
+    <label class="check"><input type="checkbox" id="drive-auto"> 自動同步（開啟 App、離開筆記、恢復網路時）</label>
+    <p id="drive-progress" class="muted" aria-live="polite"></p>
+    <div class="buttons">
+      <button type="button" id="drive-disconnect" class="danger-text">中斷連結</button>
+      <button type="button" id="drive-sync">立即同步</button>
+      <button type="button" id="drive-connect" class="primary">連結 Google 帳號</button>
+      <button type="button" command="close" commandfor="dlg-drive">關閉</button>
+    </div>
+  </dialog>
+
+  <!-- 卡片選單 -->
+  <menu id="card-menu" popover class="menu">
+    <li><button type="button" data-act="open">開啟</button></li>
+    <li><button type="button" data-act="rename">重新命名</button></li>
+    <li><button type="button" data-act="move">移動</button></li>
+    <li><button type="button" data-act="delete" class="danger-text">刪除</button></li>
+  </menu>
+
+</body>
+</html>
