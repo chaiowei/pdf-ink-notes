@@ -9,35 +9,56 @@
   <meta name="google" content="notranslate">
   <title>手寫 PDF 筆記</title>
   <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
-  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-oz58EBxj.js"></script>
-  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-B2guA6eO.css">
+  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-BvxjrlIC.js"></script>
+  <link rel="modulepreload" crossorigin href="/pdf-ink-notes/assets/rolldown-runtime-XKyaHtl9.js">
+  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-BkwDjC9z.css">
 <link rel="manifest" href="/pdf-ink-notes/manifest.webmanifest"></head>
 <body>
   <!-- 書櫃 -->
   <section id="library" class="view" aria-label="書櫃">
     <header class="topbar">
+      <button type="button" id="btn-side" class="icon-btn" aria-label="開啟側欄" data-tip="側欄"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
       <h1 class="brand">手寫 PDF 筆記</h1>
       <input id="search" type="search" placeholder="搜尋筆記與資料夾" aria-label="搜尋筆記與資料夾">
       <div class="actions">
         <label class="theme-setting">外觀 <select id="theme-setting" aria-label="外觀主題"><option value="dark">深色</option><option value="light">淺色</option><option value="system">跟隨系統</option></select></label>
-        <button type="button" class="primary" command="show-modal" commandfor="dlg-notebook">＋ 筆記本</button>
-        <button type="button" id="btn-import">匯入 PDF</button>
-        <button type="button" id="btn-new-folder">＋ 資料夾</button>
         <button type="button" id="btn-sync" data-state="off" data-tip="同步到 Google Drive">同步</button>
         <button type="button" id="btn-drive-settings" aria-label="同步設定" data-tip="同步設定">⚙</button>
       </div>
-      <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden>
+      <input id="file-input" type="file" accept="application/pdf,application/octet-stream,.pdf,.pinnote" multiple hidden>
     </header>
-    <nav class="crumbs" id="crumbs" aria-label="資料夾路徑"></nav>
-    <div class="toolbar">
-      <span id="summary" class="muted"></span>
-      <label class="sort">排序
-        <select id="sort"></select>
-      </label>
+    <div class="lib-body">
+      <aside id="side" class="side" aria-label="書櫃分類">
+        <nav class="side-nav">
+          <button type="button" data-view="all" aria-current="page"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg>全部筆記</button>
+          <button type="button" data-view="recent"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>最近使用</button>
+          <button type="button" data-view="favorites"><svg class="ic" viewBox="0 0 24 24"><path d="M12 4l2.4 5 5.4.7-4 3.7 1 5.4L12 16.2 7.2 18.8l1-5.4-4-3.7 5.4-.7z"/></svg>收藏</button>
+          <button type="button" data-view="trash"><svg class="ic" viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg>垃圾桶<span id="trash-count" class="badge" hidden></span></button>
+        </nav>
+      </aside>
+      <div id="side-scrim" class="side-scrim" hidden></div>
+      <div class="lib-main">
+        <nav class="crumbs" id="crumbs" aria-label="資料夾路徑"></nav>
+        <div class="toolbar">
+          <span id="summary" class="muted"></span>
+          <span class="tools">
+            <button type="button" id="btn-empty-trash" class="danger-text" hidden>清空垃圾桶</button>
+            <label class="sort">顯示 <select id="filter" aria-label="篩選"><option value="all">全部</option><option value="pdf">PDF</option><option value="notebook">筆記本</option></select></label>
+            <label class="sort">排序 <select id="sort"></select></label>
+            <button type="button" id="btn-layout" class="icon-btn" aria-label="切換清單／格狀" data-tip="清單／格狀"></button>
+          </span>
+        </div>
+        <main id="grid" class="grid"></main>
+        <p id="empty" class="empty" hidden>這裡還沒有東西。按右下角「＋」新增筆記本，或把 PDF 拖進來。</p>
+        <footer class="foot muted"><span id="sync-status" role="status" data-state="off"></span><span id="storage"></span></footer>
+      </div>
     </div>
-    <main id="grid" class="grid"></main>
-    <p id="empty" class="empty" hidden>這裡還沒有東西。新增筆記本，或把 PDF 拖進來。</p>
-    <footer class="foot muted"><span id="sync-status" role="status" data-state="off"></span><span id="storage"></span></footer>
+    <button type="button" id="fab" class="fab" aria-label="新增" popovertarget="fab-menu"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+    <menu id="fab-menu" popover class="menu fab-menu">
+      <li><button type="button" command="show-modal" commandfor="dlg-notebook">新增筆記本</button></li>
+      <li><button type="button" id="btn-import">匯入 PDF</button></li>
+      <li><button type="button" id="btn-new-folder">新增資料夾</button></li>
+    </menu>
   </section>
 
   <!-- 閱讀頁 -->
@@ -59,10 +80,12 @@
             <svg class="ic" viewBox="0 0 24 24"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V16a5 5 0 0 1-5 5h-1a5 5 0 0 1-4-2l-3-4.5a1.5 1.5 0 0 1 2.3-1.8L9 15z"/></svg></button>
         </span>
         <button type="button" id="btn-add-page" data-tip="在後面加一頁" hidden><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M12 11v6M9 14h6"/></svg></button>
+        <button type="button" id="btn-overview" data-tip="頁面總覽：排序、插入、刪除頁面"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></button>
         <button type="button" id="btn-outline" popovertarget="outline-panel" data-tip="書籤、目錄、跳頁"><svg class="ic" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></button>
         <button type="button" id="btn-export" data-tip="匯出含筆跡的 PDF"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 12v7h14v-7"/></svg></button>
       </div>
     </header>
+    <nav id="doc-tabs" class="doc-tabs" aria-label="已開啟的筆記"></nav>
     <div class="stage">
       <div id="ink-tools" class="rail" role="toolbar" aria-orientation="vertical" aria-label="書寫工具" aria-controls="pages">
         <button type="button" id="mode-btn" class="rail-btn mode" aria-pressed="true" data-tip="書寫／瀏覽（手指捲動）切換">
@@ -92,6 +115,9 @@
         <button type="button" class="rail-btn" id="ink-image" data-tip="插入圖片（手機可直接拍照）">
           <svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3 3-2.5 4.5 4"/></svg>
         </button>
+        <button type="button" class="rail-btn" id="ink-paste" hidden data-tip="貼上">
+          <svg class="ic" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V4h6v1M9 11h6M9 15h4"/></svg>
+        </button>
         <input type="file" id="image-input" accept="image/*" hidden>
       </div>
 
@@ -99,6 +125,8 @@
         <span id="selection-count" class="muted"></span>
         <span id="sel-colors" class="sel-colors"></span>
         <button type="button" id="sel-whiten" hidden data-tip="把圖片的白色紙張背景變透明，適合掃描的簽名、手稿">去白底</button>
+        <button type="button" id="sel-copy" data-tip="拷貝（Ctrl+C），可貼到其他分頁">拷貝</button>
+        <button type="button" id="sel-cut" data-tip="剪下（Ctrl+X）">剪下</button>
         <button type="button" id="sel-delete" class="danger-text">刪除</button>
         <button type="button" id="sel-clear">取消選取</button>
       </div>
@@ -132,6 +160,14 @@
         <section data-for="pen" class="pop-block">
           <label class="pop-row"><span class="pop-label"><svg class="ic sm" viewBox="0 0 24 24"><path d="M4 19L19 4"/><path d="M4 14l6 6M14 4l6 6"/></svg>直線</span>
             <input type="checkbox" id="pen-straight" class="switch" role="switch"></label>
+          <div class="pop-row">
+            <span class="pop-label"><svg class="ic sm" viewBox="0 0 24 24"><path d="M3 12h4M10 12h4M17 12h4"/></svg>線型</span>
+            <span id="pen-dash" class="seg dash-seg" role="radiogroup" aria-label="線型">
+              <button type="button" role="radio" data-dash="solid" aria-label="實線"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12h18"/></svg></button>
+              <button type="button" role="radio" data-dash="dashed" aria-label="虛線"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12h4M10 12h4M17 12h4"/></svg></button>
+              <button type="button" role="radio" data-dash="dotted" aria-label="點線"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12h.01M9 12h.01M14 12h.01M19 12h.01" stroke-width="3.2"/></svg></button>
+            </span>
+          </div>
           <div class="pop-row">
             <span class="pop-label"><svg class="ic sm" viewBox="0 0 24 24"><path d="M3 14c3-8 5 6 9-2s6 4 9-2"/></svg>筆劃穩定</span>
             <output id="stab-out"></output>
@@ -218,6 +254,40 @@
     </form>
   </dialog>
 
+  <!-- 頁面總覽 -->
+  <dialog id="dlg-overview" class="overview" aria-labelledby="ov-title">
+    <header class="ov-bar">
+      <h2 id="ov-title">頁面總覽</h2>
+      <span id="ov-count" class="muted"></span>
+      <span class="ov-spacer"></span>
+      <button type="button" id="ov-import" hidden>匯入 PDF 到最後</button>
+      <button type="button" id="ov-cancel">取消</button>
+      <button type="button" id="ov-done" class="primary">關閉</button>
+    </header>
+    <div id="ov-grid" class="ov-grid" role="list"></div>
+    <p class="ov-hint muted">點一下前往該頁・長按拖曳可排序・右下「⋯」可插入或刪除</p>
+    <div id="ov-menu" class="menu ov-menu" hidden>
+      <button type="button" data-act="goto">前往這頁</button>
+      <button type="button" data-act="blank-before">在前面插入空白頁</button>
+      <button type="button" data-act="blank-after">在後面插入空白頁</button>
+      <button type="button" data-act="pdf">在後面插入 PDF…</button>
+      <button type="button" data-act="delete" class="danger-text">刪除這頁</button>
+    </div>
+    <input type="file" id="ov-file" accept="application/pdf,.pdf" hidden>
+  </dialog>
+
+  <!-- 資料夾顏色 -->
+  <dialog id="dlg-color" closedby="any" aria-labelledby="dlg-color-title">
+    <form method="dialog">
+      <h2 id="dlg-color-title">資料夾顏色</h2>
+      <div id="folder-colors" class="swatches"></div>
+      <div class="buttons">
+        <button value="cancel" formnovalidate>取消</button>
+        <button value="ok" class="primary">套用</button>
+      </div>
+    </form>
+  </dialog>
+
   <!-- 刪除確認 -->
   <dialog id="dlg-confirm" aria-labelledby="dlg-confirm-title" aria-describedby="dlg-confirm-msg">
     <form method="dialog">
@@ -294,9 +364,14 @@
   <!-- 卡片選單 -->
   <menu id="card-menu" popover class="menu">
     <li><button type="button" data-act="open">開啟</button></li>
+    <li><button type="button" data-act="fav">加入收藏</button></li>
+    <li><button type="button" data-act="restore">還原</button></li>
     <li><button type="button" data-act="rename">重新命名</button></li>
     <li><button type="button" data-act="move">移動</button></li>
+    <li><button type="button" data-act="color" hidden>資料夾顏色</button></li>
+    <li><button type="button" data-act="dup">複製</button></li>
     <li><button type="button" data-act="delete" class="danger-text">刪除</button></li>
+    <li><button type="button" data-act="purge" class="danger-text">永久刪除</button></li>
   </menu>
 
 </body>
