@@ -7,18 +7,18 @@
   <script>try { const t = localStorage.getItem('pin.theme'); document.querySelector('meta[name="color-scheme"]').content = t === 'system' ? 'light dark' : t === 'light' ? 'light' : 'dark'; } catch {}</script>
   <meta name="theme-color" content="#1f6feb">
   <meta name="google" content="notranslate">
-  <title>手寫 PDF 筆記</title>
-  <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
-  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-BvxjrlIC.js"></script>
+  <title>墨頁 Inkpage</title>
+  <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
+  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-C4n157Vj.js"></script>
   <link rel="modulepreload" crossorigin href="/pdf-ink-notes/assets/rolldown-runtime-XKyaHtl9.js">
-  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-BkwDjC9z.css">
+  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-BqGsp4gx.css">
 <link rel="manifest" href="/pdf-ink-notes/manifest.webmanifest"></head>
 <body>
   <!-- 書櫃 -->
   <section id="library" class="view" aria-label="書櫃">
     <header class="topbar">
       <button type="button" id="btn-side" class="icon-btn" aria-label="開啟側欄" data-tip="側欄"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
-      <h1 class="brand">手寫 PDF 筆記</h1>
+      <h1 class="brand">墨頁</h1>
       <input id="search" type="search" placeholder="搜尋筆記與資料夾" aria-label="搜尋筆記與資料夾">
       <div class="actions">
         <label class="theme-setting">外觀 <select id="theme-setting" aria-label="外觀主題"><option value="dark">深色</option><option value="light">淺色</option><option value="system">跟隨系統</option></select></label>
@@ -45,11 +45,19 @@
             <button type="button" id="btn-empty-trash" class="danger-text" hidden>清空垃圾桶</button>
             <label class="sort">顯示 <select id="filter" aria-label="篩選"><option value="all">全部</option><option value="pdf">PDF</option><option value="notebook">筆記本</option></select></label>
             <label class="sort">排序 <select id="sort"></select></label>
+            <button type="button" id="btn-select" data-tip="多選：批次匯出、合併 PDF">選取</button>
             <button type="button" id="btn-layout" class="icon-btn" aria-label="切換清單／格狀" data-tip="清單／格狀"></button>
           </span>
         </div>
         <main id="grid" class="grid"></main>
         <p id="empty" class="empty" hidden>這裡還沒有東西。按右下角「＋」新增筆記本，或把 PDF 拖進來。</p>
+        <div id="sel-bar" class="sel-bar" hidden>
+          <span id="sel-count">已選 0 份</span>
+          <button type="button" id="sel-all">全選</button>
+          <button type="button" id="sel-export">各自匯出 PDF</button>
+          <button type="button" id="sel-merge" class="primary">合併成一份 PDF</button>
+          <button type="button" id="sel-cancel">完成</button>
+        </div>
         <footer class="foot muted"><span id="sync-status" role="status" data-state="off"></span><span id="storage"></span></footer>
       </div>
     </div>
@@ -99,6 +107,9 @@
         <hr class="rail-sep">
         <button type="button" class="rail-btn" data-tool="lasso" aria-pressed="false" data-tip="套索：圈選後可移動、換色、刪除">
           <svg class="ic" viewBox="0 0 24 24"><path d="M12 4c4.4 0 8 2.2 8 5s-3.6 5-8 5-8-2.2-8-5 3.6-5 8-5z" stroke-dasharray="3 2.4"/><path d="M8.5 13.5c-1 1.6-.5 3.6 1.2 4.4 1.2.6 2.3.3 2.8 1.6"/></svg>
+        </button>
+        <button type="button" class="rail-btn" data-tool="laser" aria-pressed="false" data-tip="雷射筆：按住移動指出重點，放開後軌跡淡出，不會留下筆跡（再點一次換顏色）">
+          <svg class="ic" viewBox="0 0 24 24"><circle cx="8" cy="16" r="2.6" fill="currentColor"/><path d="M11 13l8-8M15.5 3.5l1 2.5 2.5 1M20.5 9l-2.5-1-1-2.5" /></svg>
         </button>
         <button type="button" class="rail-btn" data-tool="eraser" aria-pressed="false" data-tip="橡皮擦（再點一次調整大小與模式）">
           <svg class="ic" viewBox="0 0 24 24"><path d="M9 19h10M5.2 14.8l8.6-8.6a2 2 0 0 1 2.8 0l2.2 2.2a2 2 0 0 1 0 2.8L11.5 19H8.7z"/><path d="M8.7 11.9l5 5"/></svg>
@@ -208,6 +219,10 @@
         <legend>紙張樣式</legend>
         <div class="tpl-options" id="tpl-styles"></div>
       </fieldset>
+      <fieldset class="field">
+        <legend>封面（顯示在書櫃）</legend>
+        <div class="tpl-options cover-options" id="cover-options"></div>
+      </fieldset>
       <div class="row">
         <label class="field">尺寸 <select name="size" id="tpl-size"></select></label>
         <label class="field">方向
@@ -281,6 +296,18 @@
     <form method="dialog">
       <h2 id="dlg-color-title">資料夾顏色</h2>
       <div id="folder-colors" class="swatches"></div>
+      <div class="buttons">
+        <button value="cancel" formnovalidate>取消</button>
+        <button value="ok" class="primary">套用</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 更換封面 -->
+  <dialog id="dlg-cover" closedby="any" aria-labelledby="dlg-cover-title">
+    <form method="dialog" id="form-cover">
+      <h2 id="dlg-cover-title">更換封面</h2>
+      <div class="tpl-options cover-options" id="cover-change"></div>
       <div class="buttons">
         <button value="cancel" formnovalidate>取消</button>
         <button value="ok" class="primary">套用</button>
@@ -369,10 +396,11 @@
     <li><button type="button" data-act="rename">重新命名</button></li>
     <li><button type="button" data-act="move">移動</button></li>
     <li><button type="button" data-act="color" hidden>資料夾顏色</button></li>
+    <li><button type="button" data-act="cover" hidden>更換封面</button></li>
     <li><button type="button" data-act="dup">複製</button></li>
     <li><button type="button" data-act="delete" class="danger-text">刪除</button></li>
     <li><button type="button" data-act="purge" class="danger-text">永久刪除</button></li>
   </menu>
-
+
 </body>
 </html>
