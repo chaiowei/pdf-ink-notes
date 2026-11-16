@@ -9,9 +9,9 @@
   <meta name="google" content="notranslate">
   <title>墨頁 Inkpage</title>
   <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
-  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-Mc3gs2tj.js"></script>
+  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-H4YlK6xf.js"></script>
   <link rel="modulepreload" crossorigin href="/pdf-ink-notes/assets/rolldown-runtime-BCiCTKAo.js">
-  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-DGJLcpEi.css">
+  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-CnkED2eW.css">
 <link rel="manifest" href="/pdf-ink-notes/manifest.webmanifest"></head>
 <body>
   <!-- 書櫃 -->
@@ -107,7 +107,7 @@
         <button type="button" id="btn-study" aria-pressed="false" data-tip="分割學習筆記：下方開第二份筆記，可從上方拖曳內容過去"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2.5"/><path d="M4 13h16"/></svg></button>
         <button type="button" id="btn-overview" data-tip="頁面總覽：排序、插入、刪除頁面"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg></button>
         <button type="button" id="btn-outline" popovertarget="outline-panel" data-tip="書籤、目錄、跳頁"><svg class="ic" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg></button>
-        <button type="button" id="btn-export" data-tip="匯出含筆跡的 PDF"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 12v7h14v-7"/></svg></button>
+        <button type="button" id="btn-export" data-tip="匯出：PDF、圖片、Word、Excel"><svg class="ic" viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4"/><path d="M5 12v7h14v-7"/></svg></button>
       </div></details>
     </header>
       <div id="ink-tools" class="rail" role="toolbar" aria-orientation="horizontal" aria-label="書寫工具" aria-controls="pages">
@@ -115,38 +115,20 @@
           <svg class="ic" viewBox="0 0 24 24"><path d="M4 20l1-4L16.5 4.5a2 2 0 0 1 3 3L8 19z"/><path d="M14.5 6.5l3 3"/></svg>
         </button>
         <hr class="rail-sep">
-        <div id="pen-list" class="pen-list" role="group" aria-label="筆盒"></div>
-        <button type="button" id="pen-add" class="rail-btn" data-tip="新增一支常用筆（複製目前這支）">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
-        </button>
+        <div class="rail-tools" role="group" aria-label="工具">
+          <button type="button" class="rail-btn cat-btn" data-cat="pen" aria-pressed="true" data-tip="筆（再點一次調整筆型）"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l5 7-2.5 8h-5L7 10z"/><circle cx="12" cy="11" r="1.3"/><path d="M12 12.3V18M9 21h6"/></svg></button>
+          <button type="button" class="rail-btn cat-btn" data-cat="highlighter" aria-pressed="false" data-tip="螢光筆（再點一次調整）"><svg class="ic" viewBox="0 0 24 24"><path d="M15 4l5 5-8.5 8.5-5-1-1-5z"/><path d="M6.5 16.5L4 21l4.5-1.5"/><path d="M13 7l4 4"/></svg></button>
+          <button type="button" class="rail-btn cat-btn" data-cat="tape" aria-pressed="false" data-tip="膠帶：蓋住內容（再點一次調整）"><svg class="ic" viewBox="0 0 24 24"><g transform="rotate(-35 12 12)"><path d="M3 8h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4z"/><path d="M8 8v10M13 8v10" stroke-dasharray="1.5 2"/></g></svg></button>
+          <button type="button" class="rail-btn" data-tool="eraser" aria-pressed="false" data-tip="橡皮擦（再點一次調整大小與模式）"><svg class="ic" viewBox="0 0 24 24"><path d="M9 19h10M5.2 14.8l8.6-8.6a2 2 0 0 1 2.8 0l2.2 2.2a2 2 0 0 1 0 2.8L11.5 19H8.7z"/><path d="M8.7 11.9l5 5"/></svg></button>
+          <button type="button" class="rail-btn" data-tool="shape" aria-pressed="false" data-tip="形狀：拖曳畫直線、箭頭、矩形、圓、三角形（再點一次換形狀）"><svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="10" width="9" height="9" rx="1.5"/><circle cx="15.5" cy="8.5" r="5"/></svg></button>
+          <button type="button" class="rail-btn" data-tool="text" aria-pressed="false" data-tip="文字：點一下新增文字框（再點一次調整字級）"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7V5h16v2M12 5v14M9 19h6"/></svg></button>
+          <button type="button" class="rail-btn" data-tool="lasso" aria-pressed="false" data-tip="矩形框選：拖曳框選後可移動、換色、刪除"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1.5" stroke-dasharray="3 2"/></svg></button>
+          <button type="button" class="rail-btn" id="more-tools-btn" aria-haspopup="true" aria-pressed="false" data-tip="更多工具：雷射筆、檢核框、剪取、圖片"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h.01M12 12h.01M19 12h.01" stroke-width="3.4" stroke-linecap="round"/></svg></button>
+        </div>
         <hr class="rail-sep">
-        <button type="button" class="rail-btn" data-tool="lasso" aria-pressed="false" data-tip="矩形框選：拖曳框選後可移動、換色、刪除">
-          <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1.5" stroke-dasharray="3 2"/></svg>
-        </button>
-        <button type="button" class="rail-btn" data-tool="laser" aria-pressed="false" data-tip="雷射筆：按住移動指出重點，放開後軌跡淡出，不會留下筆跡（再點一次換顏色）">
-          <svg class="ic" viewBox="0 0 24 24"><circle cx="8" cy="16" r="2.6" fill="currentColor"/><path d="M11 13l8-8M15.5 3.5l1 2.5 2.5 1M20.5 9l-2.5-1-1-2.5" /></svg>
-        </button>
-        <button type="button" class="rail-btn" data-tool="eraser" aria-pressed="false" data-tip="橡皮擦（再點一次調整大小與模式）">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M9 19h10M5.2 14.8l8.6-8.6a2 2 0 0 1 2.8 0l2.2 2.2a2 2 0 0 1 0 2.8L11.5 19H8.7z"/><path d="M8.7 11.9l5 5"/></svg>
-        </button>
-        <button type="button" class="rail-btn" data-tool="shape" aria-pressed="false" data-tip="形狀：拖曳畫直線、箭頭、矩形、圓、三角形（再點一次換形狀、調粗細顏色）">
-          <svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="10" width="9" height="9" rx="1.5"/><circle cx="15.5" cy="8.5" r="5"/></svg>
-        </button>
-        <button type="button" class="rail-btn" data-tool="text" aria-pressed="false" data-tip="文字：點一下新增文字框（再點一次調整字級與顏色）">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M4 7V5h16v2M12 5v14M9 19h6"/></svg>
-        </button>
-        <button type="button" class="rail-btn" data-tool="check" aria-pressed="false" data-tip="檢核框：點一下新增，點方框打勾">
-          <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.5l3 3 5-6"/></svg>
-        </button>
-        <button type="button" class="rail-btn" data-tool="clip" aria-pressed="false" data-tip="剪取：框選一塊內容，拖到另一個窗格（或貼到別的筆記）；貼過去的內容帶有回原處的連結">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M7 3v14h14M3 7h14v14"/></svg>
-        </button>
-        <button type="button" class="rail-btn" id="ink-image" data-tip="插入圖片（手機可直接拍照）">
-          <svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3 3-2.5 4.5 4"/></svg>
-        </button>
-        <button type="button" class="rail-btn" id="ink-paste" hidden data-tip="貼上">
-          <svg class="ic" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V4h6v1M9 11h6M9 15h4"/></svg>
-        </button>
+        <div id="rail-presets" class="rail-presets" role="group" aria-label="粗細"></div>
+        <div id="rail-colors" class="rail-colors" role="group" aria-label="顏色"></div>
+        <input type="color" id="rail-color-input" class="sr-only" tabindex="-1" aria-hidden="true">
         <hr class="rail-sep">
         <div class="rail-groups" role="group" aria-label="功能分類">
           <button type="button" class="rail-chip" data-group="grp-view" aria-haspopup="true">檢視</button>
@@ -171,6 +153,88 @@
       </div>
 
       <!-- 筆設定面板（筆、橡皮擦、文字共用） -->
+      <div id="grp-view" class="pop grp-pop" popover aria-label="檢視"><h3 class="pop-title">檢視</h3></div>
+      <div id="grp-page" class="pop grp-pop" popover aria-label="頁面"><h3 class="pop-title">頁面</h3>
+        <button type="button" id="page-rot-cw" data-tip="順時針旋轉本頁 90°"><svg class="ic" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 4v5h-5"/></svg></button>
+        <button type="button" id="page-rot-ccw" data-tip="逆時針旋轉本頁 90°"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v5h5"/></svg></button>
+      </div>
+      <div id="grp-tool" class="pop grp-pop" popover aria-label="工具"><h3 class="pop-title">工具</h3></div>
+      <div id="grp-export" class="pop grp-pop" popover aria-label="匯出"><h3 class="pop-title">匯出</h3></div>
+
+      <div id="more-tools" class="pop grp-pop" popover aria-label="更多工具"><h3 class="pop-title">更多工具</h3>
+        <button type="button" data-tool="laser" aria-pressed="false" data-tip="雷射筆"><svg class="ic" viewBox="0 0 24 24"><circle cx="8" cy="16" r="2.6" fill="currentColor"/><path d="M11 13l8-8M15.5 3.5l1 2.5 2.5 1M20.5 9l-2.5-1-1-2.5"/></svg><span class="grp-label">雷射筆</span></button>
+        <button type="button" data-tool="check" aria-pressed="false" data-tip="檢核框"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.5l3 3 5-6"/></svg><span class="grp-label">檢核框</span></button>
+        <button type="button" data-tool="clip" aria-pressed="false" data-tip="剪取"><svg class="ic" viewBox="0 0 24 24"><path d="M7 3v14h14M3 7h14v14"/></svg><span class="grp-label">剪取</span></button>
+        <button type="button" id="ink-image" data-tip="插入圖片"><svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3 3-2.5 4.5 4"/></svg><span class="grp-label">插入圖片</span></button>
+        <button type="button" id="ink-paste" hidden data-tip="貼上"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V4h6v1M9 11h6M9 15h4"/></svg><span class="grp-label">貼上</span></button>
+      </div>
+
+      <div id="pen-popover" class="pop" popover aria-label="工具設定">
+        <h3 id="pop-title" class="pop-title"></h3>
+        <canvas id="pen-preview" class="preview" width="560" height="150" data-for="pen" data-cats="pen tape" aria-hidden="true"></canvas>
+        <section data-for="pen" data-cats="pen" class="pop-types">
+          <div id="pen-types" class="type-row" role="radiogroup" aria-label="筆型"></div>
+        </section>
+        <section data-for="shape" class="pop-block">
+          <div id="shape-types" class="shape-row" role="radiogroup" aria-label="形狀"></div>
+        </section>
+        <section data-for="eraser" class="pop-block">
+          <div class="seg" role="radiogroup" aria-label="擦除模式">
+            <button type="button" id="eraser-stroke" role="radio">整筆擦除</button>
+            <button type="button" id="eraser-partial" role="radio">局部擦除</button>
+          </div>
+        </section>
+        <section data-for="eraser text shape" class="pop-block">
+          <div class="pop-row"><span id="width-label" class="pop-label">粗細</span><output id="width-out"></output></div>
+          <input type="range" id="ink-width" aria-labelledby="width-label">
+        </section>
+        <section id="pen-feel" data-for="pen" data-cats="pen" class="pop-block">
+          <div class="pop-row"><span class="pop-label">筆頭尖度</span><output id="sharp-out"></output></div>
+          <input type="range" id="pen-sharp" min="0" max="100" step="5" aria-label="筆頭尖度">
+          <div class="pop-row"><span class="pop-label">壓力靈敏度</span><output id="sens-out"></output></div>
+          <input type="range" id="pen-sens" min="0" max="100" step="5" aria-label="壓力靈敏度">
+        </section>
+        <section data-for="pen" data-cats="pen" class="pop-block">
+          <div class="pop-row"><span class="pop-label">筆畫穩定</span><output class="js-stab-out"></output></div>
+          <input type="range" id="pen-stab" class="js-stab" min="0" max="100" step="5" aria-label="筆畫穩定">
+        </section>
+        <section data-for="pen" data-cats="highlighter" class="pop-block">
+          <div class="pop-row"><span class="pop-label">筆畫穩定</span><output class="js-stab-out"></output></div>
+          <input type="range" id="hl-stab" class="js-stab" min="0" max="100" step="5" aria-label="筆畫穩定">
+        </section>
+        <section data-for="pen" data-cats="pen highlighter" class="pop-block">
+          <label class="pop-row"><span id="snap-label" class="pop-label"></span>
+            <input type="checkbox" id="pen-snap" class="switch" role="switch"></label>
+        </section>
+        <section data-for="pen" data-cats="tape" class="pop-block">
+          <label class="pop-row"><span class="pop-label">平直膠帶</span>
+            <input type="checkbox" id="tape-straight" class="switch" role="switch"></label>
+          <button type="button" id="tape-clear" class="pop-danger">從頁面移除全部</button>
+        </section>
+        <details data-for="pen" data-cats="pen highlighter" class="pop-block pop-more">
+          <summary>更多設定</summary>
+          <div class="pop-row"><span class="pop-label">粗細</span><output class="js-width-out"></output></div>
+          <input type="range" id="pen-width" class="js-width" aria-label="粗細">
+          <label class="pop-row"><span class="pop-label">直線</span>
+            <input type="checkbox" id="pen-straight" class="switch" role="switch"></label>
+          <div class="pop-row">
+            <span class="pop-label">線型</span>
+            <span id="pen-dash" class="seg dash-seg" role="radiogroup" aria-label="線型">
+              <button type="button" role="radio" data-dash="solid" aria-label="實線"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12h18"/></svg></button>
+              <button type="button" role="radio" data-dash="dashed" aria-label="虛線"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12h4M10 12h4M17 12h4"/></svg></button>
+              <button type="button" role="radio" data-dash="dotted" aria-label="點線"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12h.01M9 12h.01M14 12h.01M19 12h.01" stroke-width="3.2"/></svg></button>
+            </span>
+          </div>
+        </details>
+        <section data-for="color" class="pop-block">
+          <span class="pop-label">基本顏色</span>
+          <div id="basic-colors" class="swatches"></div>
+          <div class="pop-row"><span class="pop-label">我的顏色</span>
+            <label class="add-color" data-tip="新增自訂顏色"><svg class="ic sm" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>新增<input type="color" id="ink-color-custom" aria-label="新增自訂顏色"></label></div>
+          <div id="my-colors" class="swatches"></div>
+        </section>
+      </div>
+
       <div id="grp-view" class="pop grp-pop" popover aria-label="檢視"><h3 class="pop-title">檢視</h3></div>
       <div id="grp-page" class="pop grp-pop" popover aria-label="頁面"><h3 class="pop-title">頁面</h3>
         <button type="button" id="page-rot-cw" data-tip="順時針旋轉本頁 90°"><svg class="ic" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 4v5h-5"/></svg></button>
