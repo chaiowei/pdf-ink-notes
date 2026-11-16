@@ -9,9 +9,9 @@
   <meta name="google" content="notranslate">
   <title>墨頁 Inkpage</title>
   <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
-  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-DMnBvl4D.js"></script>
+  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-CqJJSJJu.js"></script>
   <link rel="modulepreload" crossorigin href="/pdf-ink-notes/assets/rolldown-runtime-BCiCTKAo.js">
-  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-B93a9p15.css">
+  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-DGJLcpEi.css">
 <link rel="manifest" href="/pdf-ink-notes/manifest.webmanifest"></head>
 <body>
   <!-- 書櫃 -->
@@ -25,7 +25,7 @@
         <button type="button" id="btn-sync" data-state="off" data-tip="同步到 Google Drive">同步</button>
         <button type="button" id="btn-drive-settings" aria-label="同步設定" data-tip="同步設定">⚙</button>
       </div>
-      <input id="file-input" type="file" accept="application/pdf,application/octet-stream,.pdf,.pinnote" multiple hidden>
+      <input id="file-input" type="file" accept="application/pdf,application/octet-stream,.pdf,.pinnote,.docx,.xlsx,.md,.markdown,.txt" multiple hidden>
     </header>
     <div class="lib-body">
       <aside id="side" class="side" aria-label="書櫃分類">
@@ -147,6 +147,13 @@
         <button type="button" class="rail-btn" id="ink-paste" hidden data-tip="貼上">
           <svg class="ic" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V4h6v1M9 11h6M9 15h4"/></svg>
         </button>
+        <hr class="rail-sep">
+        <div class="rail-groups" role="group" aria-label="功能分類">
+          <button type="button" class="rail-chip" data-group="grp-view" aria-haspopup="true">檢視</button>
+          <button type="button" class="rail-chip" data-group="grp-page" aria-haspopup="true">頁面</button>
+          <button type="button" class="rail-chip" data-group="grp-tool" aria-haspopup="true">工具</button>
+          <button type="button" class="rail-chip" data-group="grp-export" aria-haspopup="true">匯出</button>
+        </div>
         <input type="file" id="image-input" accept="image/*" hidden>
       </div>
     <div class="work">
@@ -164,24 +171,22 @@
       </div>
 
       <!-- 筆設定面板（筆、橡皮擦、文字共用） -->
+      <div id="grp-view" class="pop grp-pop" popover aria-label="檢視"><h3 class="pop-title">檢視</h3></div>
+      <div id="grp-page" class="pop grp-pop" popover aria-label="頁面"><h3 class="pop-title">頁面</h3>
+        <button type="button" id="page-rot-cw" data-tip="順時針旋轉本頁 90°"><svg class="ic" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 4v5h-5"/></svg></button>
+        <button type="button" id="page-rot-ccw" data-tip="逆時針旋轉本頁 90°"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 4v5h5"/></svg></button>
+      </div>
+      <div id="grp-tool" class="pop grp-pop" popover aria-label="工具"><h3 class="pop-title">工具</h3></div>
+      <div id="grp-export" class="pop grp-pop" popover aria-label="匯出"><h3 class="pop-title">匯出</h3></div>
+
       <div id="pen-popover" class="pop" popover aria-label="工具設定">
+        <h3 id="pop-title" class="pop-title"></h3>
+        <canvas id="pen-preview" class="preview" width="560" height="150" data-for="pen" aria-hidden="true"></canvas>
         <section data-for="pen" class="pop-types">
           <div id="pen-types" class="type-row" role="radiogroup" aria-label="筆型"></div>
         </section>
         <section data-for="shape" class="pop-block">
           <div id="shape-types" class="shape-row" role="radiogroup" aria-label="形狀"></div>
-        </section>
-        <section data-for="pen eraser text shape" class="pop-block">
-          <div class="pop-row">
-            <span id="width-label" class="pop-label">筆刷粗度</span>
-            <span class="stepper">
-              <button type="button" id="width-minus" aria-label="變細">－</button>
-              <output id="width-out"></output>
-              <button type="button" id="width-plus" aria-label="變粗">＋</button>
-            </span>
-          </div>
-          <input type="range" id="ink-width" aria-labelledby="width-label">
-          <canvas id="pen-preview" class="preview" width="560" height="110" data-for="pen" aria-hidden="true"></canvas>
         </section>
         <section data-for="eraser" class="pop-block">
           <div class="seg" role="radiogroup" aria-label="擦除模式">
@@ -189,24 +194,34 @@
             <button type="button" id="eraser-partial" role="radio">局部擦除</button>
           </div>
         </section>
+        <section data-for="pen eraser text shape" class="pop-block">
+          <div class="pop-row"><span id="width-label" class="pop-label">筆刷粗度</span><output id="width-out"></output></div>
+          <input type="range" id="ink-width" aria-labelledby="width-label">
+        </section>
+        <section id="pen-feel" data-for="pen" class="pop-block">
+          <div class="pop-row"><span class="pop-label">筆頭尖度</span><output id="sharp-out"></output></div>
+          <input type="range" id="pen-sharp" min="0" max="100" step="5" aria-label="筆頭尖度">
+          <div class="pop-row"><span class="pop-label">壓力靈敏度</span><output id="sens-out"></output></div>
+          <input type="range" id="pen-sens" min="0" max="100" step="5" aria-label="壓力靈敏度">
+        </section>
         <section data-for="pen" class="pop-block">
-          <label class="pop-row"><span class="pop-label"><svg class="ic sm" viewBox="0 0 24 24"><path d="M4 19L19 4"/><path d="M4 14l6 6M14 4l6 6"/></svg>直線</span>
+          <div class="pop-row"><span class="pop-label">筆畫穩定</span><output id="stab-out"></output></div>
+          <input type="range" id="pen-stab" min="0" max="100" step="5" aria-label="筆畫穩定">
+        </section>
+        <section data-for="pen" class="pop-block">
+          <h4 class="pop-sub">設定</h4>
+          <label class="pop-row"><span class="pop-label">直線</span>
             <input type="checkbox" id="pen-straight" class="switch" role="switch"></label>
+          <label class="pop-row"><span class="pop-label">圖形校正（停筆自動變形）</span>
+            <input type="checkbox" id="pen-snap" class="switch" role="switch"></label>
           <div class="pop-row">
-            <span class="pop-label"><svg class="ic sm" viewBox="0 0 24 24"><path d="M3 12h4M10 12h4M17 12h4"/></svg>線型</span>
+            <span class="pop-label">線型</span>
             <span id="pen-dash" class="seg dash-seg" role="radiogroup" aria-label="線型">
               <button type="button" role="radio" data-dash="solid" aria-label="實線"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12h18"/></svg></button>
               <button type="button" role="radio" data-dash="dashed" aria-label="虛線"><svg class="ic" viewBox="0 0 24 24"><path d="M3 12h4M10 12h4M17 12h4"/></svg></button>
               <button type="button" role="radio" data-dash="dotted" aria-label="點線"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12h.01M9 12h.01M14 12h.01M19 12h.01" stroke-width="3.2"/></svg></button>
             </span>
           </div>
-          <div class="pop-row">
-            <span class="pop-label"><svg class="ic sm" viewBox="0 0 24 24"><path d="M3 14c3-8 5 6 9-2s6 4 9-2"/></svg>筆劃穩定</span>
-            <output id="stab-out"></output>
-          </div>
-          <input type="range" id="pen-stab" min="0" max="100" step="5" aria-label="筆劃穩定">
-          <label class="pop-row"><span class="pop-label"><svg class="ic sm" viewBox="0 0 24 24"><rect x="3.5" y="10" width="9" height="9" rx="1.5"/><circle cx="15.5" cy="8.5" r="5"/></svg>圖形校正（停筆自動變形）</span>
-            <input type="checkbox" id="pen-snap" class="switch" role="switch"></label>
         </section>
         <section data-for="pen text shape" class="pop-block">
           <span class="pop-label">基本顏色</span>
@@ -429,7 +444,16 @@
   <!-- 匯出 PDF -->
   <dialog id="dlg-export" closedby="any" aria-labelledby="dlg-export-title">
     <form method="dialog" id="form-export">
-      <h2 id="dlg-export-title">匯出 PDF</h2>
+      <h2 id="dlg-export-title">匯出</h2>
+      <label class="field">格式
+        <select name="format" id="export-format">
+          <option value="pdf">PDF（含筆跡）</option>
+          <option value="png">圖片 PNG</option>
+          <option value="jpg">圖片 JPG</option>
+          <option value="docx">Word（.docx）</option>
+          <option value="xlsx">Excel（.xlsx）</option>
+        </select>
+      </label>
       <fieldset class="field">
         <legend>範圍</legend>
         <label class="check"><input type="radio" name="scope" value="all" checked> 全部頁面</label>
@@ -447,12 +471,12 @@
         <input name="pw" id="export-pw" type="password" autocomplete="new-password" maxlength="64" placeholder="英文、數字與一般符號" aria-label="開啟密碼">
         <p class="muted small">使用 AES 加密。加密版目前無法再匯入墨頁，請另外保留一份未加密的原檔。</p>
       </fieldset>
-      <p class="muted small">筆跡以向量輸出，放大不會模糊；文字框和圖片以高解析度圖片輸出。</p>
+      <p id="export-note" class="muted small">x</p>
       <p id="export-progress" class="muted" aria-live="polite"></p>
       <div class="buttons">
         <button value="cancel" formnovalidate>取消</button>
         <button value="share" id="export-share" hidden>分享</button>
-        <button value="save" class="primary">儲存 PDF</button>
+        <button value="save" id="export-save" class="primary">儲存 PDF</button>
       </div>
     </form>
   </dialog>
