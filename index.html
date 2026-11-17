@@ -9,9 +9,9 @@
   <meta name="google" content="notranslate">
   <title>墨頁 Inkpage</title>
   <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
-  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-H4YlK6xf.js"></script>
+  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-DxW39gfo.js"></script>
   <link rel="modulepreload" crossorigin href="/pdf-ink-notes/assets/rolldown-runtime-BCiCTKAo.js">
-  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-CnkED2eW.css">
+  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-DzHZjy1y.css">
 <link rel="manifest" href="/pdf-ink-notes/manifest.webmanifest"></head>
 <body>
   <!-- 書櫃 -->
@@ -65,6 +65,7 @@
     <menu id="fab-menu" popover class="menu fab-menu">
       <li><button type="button" command="show-modal" commandfor="dlg-notebook">新增筆記本</button></li>
       <li><button type="button" id="btn-import">匯入檔案（PDF／Word／Excel／MD）</button></li>
+      <li><button type="button" command="show-modal" commandfor="dlg-convert" data-open-convert>檔案轉換（不用開筆記）</button></li>
       <li><button type="button" id="btn-new-folder">新增資料夾</button></li>
     </menu>
   </section>
@@ -564,6 +565,26 @@
       <button type="button" id="drive-sync">立即同步</button>
       <button type="button" id="drive-connect" class="primary">連結 Google 帳號</button>
       <button type="button" command="close" commandfor="dlg-drive">關閉</button>
+    </div>
+  </dialog>
+
+  <!-- 檔案轉換（獨立，不用開筆記） -->
+  <input type="file" id="cv-file" hidden accept=".pdf,.docx,.xlsx,.md,.markdown,.txt,.dxf,.dwg">
+  <dialog id="dlg-convert" closedby="any" aria-labelledby="dlg-convert-title">
+    <h2 id="dlg-convert-title">檔案轉換</h2>
+    <div class="field"><span>來源檔案</span>
+      <div class="pop-row"><button type="button" id="cv-pick">選擇檔案…</button><span id="cv-name" class="muted">尚未選擇檔案</span></div>
+    </div>
+    <label class="field">轉成<select id="cv-target" disabled></select></label>
+    <div id="cv-cad-opts" hidden>
+      <label class="field">紙張大小<select id="cv-paper"><option>A3</option><option>A4</option><option>A2</option><option>A1</option></select></label>
+      <label class="field"><span><input type="checkbox" id="cv-color"> 保留圖層顏色（預設全黑）</span></label>
+    </div>
+    <p id="cv-note" class="muted"></p>
+    <p id="cv-status" class="muted" role="status"></p>
+    <div class="buttons">
+      <button type="button" command="close" commandfor="dlg-convert">關閉</button>
+      <button type="button" id="cv-run" class="primary" disabled>轉換並儲存</button>
     </div>
   </dialog>
 
