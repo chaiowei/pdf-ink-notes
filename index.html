@@ -9,9 +9,9 @@
   <meta name="google" content="notranslate">
   <title>墨頁 Inkpage</title>
   <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
-  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-DlmCb9sR.js"></script>
+  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-DaR1J1g4.js"></script>
   <link rel="modulepreload" crossorigin href="/pdf-ink-notes/assets/rolldown-runtime-BCiCTKAo.js">
-  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-CPCeDsf3.css">
+  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-jn6zjyFj.css">
 <link rel="manifest" href="/pdf-ink-notes/manifest.webmanifest"></head>
 <body>
   <!-- 書櫃 -->
@@ -33,6 +33,7 @@
           <button type="button" data-view="all" aria-current="page"><svg class="ic" viewBox="0 0 24 24"><path d="M4 6a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg>全部筆記</button>
           <button type="button" data-view="recent"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>最近使用</button>
           <button type="button" data-view="favorites"><svg class="ic" viewBox="0 0 24 24"><path d="M12 4l2.4 5 5.4.7-4 3.7 1 5.4L12 16.2 7.2 18.8l1-5.4-4-3.7 5.4-.7z"/></svg>收藏</button>
+          <button type="button" data-open-cad><svg class="ic" viewBox="0 0 24 24"><path d="M3 20h18M5 20V8l7-4 7 4v12M9 20v-6h6v6"/></svg>CAD 圖面</button>
           <button type="button" data-view="trash"><svg class="ic" viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg>垃圾桶<span id="trash-count" class="badge" hidden></span></button>
         </nav>
       </aside>
@@ -61,6 +62,7 @@
         <footer class="foot muted"><span id="sync-status" role="status" data-state="off"></span><span id="storage"></span></footer>
       </div>
     </div>
+    <button type="button" class="cad-entry primary" data-open-cad aria-label="CAD 圖面">CAD</button>
     <button type="button" id="fab" class="fab" aria-label="新增" popovertarget="fab-menu"><svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
     <menu id="fab-menu" popover class="menu fab-menu">
       <li><button type="button" command="show-modal" commandfor="dlg-notebook">新增筆記本</button></li>
@@ -68,6 +70,74 @@
       <li><button type="button" command="show-modal" commandfor="dlg-convert" data-open-convert>檔案轉換（不用開筆記）</button></li>
       <li><button type="button" id="btn-new-folder">新增資料夾</button></li>
     </menu>
+  </section>
+
+  <!-- CAD 書櫃（獨立於筆記） -->
+  <section id="cad-lib" class="view cad-lib" aria-label="CAD 圖面" hidden>
+    <header class="topbar">
+      <button type="button" id="cad-lib-back" class="icon-btn" aria-label="回筆記書櫃" data-tip="回筆記書櫃"><svg class="ic" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <h1 class="brand">CAD 圖面</h1>
+      <span class="grow"></span>
+      <button type="button" id="cad-import" class="primary">匯入 DXF／DWG</button>
+      <input id="cad-file" type="file" accept="*/*" multiple hidden>
+    </header>
+    <div class="cad-lib-body">
+      <p id="cad-status" class="cad-status muted" role="status"></p>
+      <div id="cad-grid" class="cad-grid"></div>
+      <p id="cad-empty" class="cad-empty" hidden>還沒有 CAD 圖。按右上角「匯入 DXF／DWG」，或在檔案管理員用「開啟方式」選墨頁。</p>
+    </div>
+  </section>
+
+  <!-- CAD 查看器 -->
+  <section id="cad-view" class="view cad-view" aria-label="CAD 查看器" hidden>
+    <header class="cad-bar">
+      <button type="button" id="cad-back" class="icon-btn" aria-label="返回" data-tip="返回"><svg class="ic" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <span id="cad-title" class="cad-title"></span>
+      <span class="cad-sep"></span>
+      <button type="button" data-cad-tool="hand" aria-pressed="true">平移</button>
+      <button type="button" data-cad-tool="measure" aria-pressed="false">量測</button>
+      <button type="button" data-cad-tool="dim" aria-pressed="false">尺寸線</button>
+      <button type="button" data-cad-tool="leader" aria-pressed="false">引線</button>
+      <button type="button" data-cad-tool="cloud" aria-pressed="false">雲形框</button>
+      <button type="button" data-cad-tool="pen" aria-pressed="false">手寫筆</button>
+      <button type="button" data-cad-tool="text" aria-pressed="false">文字</button>
+      <button type="button" data-cad-tool="eraser" aria-pressed="false">橡皮擦</button>
+      <span class="cad-sep"></span>
+      <button type="button" data-cad-color="#e5322d" class="cad-color" style="background:#e5322d" aria-label="紅" aria-pressed="true"></button>
+      <button type="button" data-cad-color="#1f6feb" class="cad-color" style="background:#1f6feb" aria-label="藍" aria-pressed="false"></button>
+      <button type="button" data-cad-color="#079455" class="cad-color" style="background:#079455" aria-label="綠" aria-pressed="false"></button>
+      <button type="button" data-cad-color="#f79009" class="cad-color" style="background:#f79009" aria-label="橘" aria-pressed="false"></button>
+      <button type="button" data-cad-color="#1c2330" class="cad-color" style="background:#1c2330" aria-label="黑" aria-pressed="false"></button>
+      <span class="cad-sep"></span>
+      <button type="button" id="cad-snap-on" aria-pressed="true">鎖點</button>
+      <button type="button" data-snap="end" class="cad-snapchip" aria-pressed="true" aria-label="端點">端</button>
+      <button type="button" data-snap="mid" class="cad-snapchip" aria-pressed="true" aria-label="中點">中</button>
+      <button type="button" data-snap="center" class="cad-snapchip" aria-pressed="true" aria-label="圓心">圓</button>
+      <button type="button" data-snap="inter" class="cad-snapchip" aria-pressed="true" aria-label="交點">交</button>
+      <span class="cad-sep"></span>
+      <button type="button" id="cad-undo" aria-label="復原">復原</button>
+      <button type="button" id="cad-redo" aria-label="重做">重做</button>
+      <button type="button" id="cad-cancel" hidden>取消</button>
+      <span class="cad-sep"></span>
+      <button type="button" id="cad-zout" aria-label="縮小">－</button>
+      <button type="button" id="cad-zin" aria-label="放大">＋</button>
+      <button type="button" id="cad-fit">適合畫面</button>
+      <button type="button" id="cad-fit-all">全部範圍</button>
+      <button type="button" popovertarget="cad-layers">圖層</button>
+      <label class="muted">單位 <select id="cad-unit" aria-label="圖面單位"></select></label>
+      <button type="button" id="cad-clear" class="danger-text">清除標註</button>
+    </header>
+    <div id="cad-stage" class="cad-stage">
+      <canvas id="cad-canvas"></canvas>
+      <div id="cad-hud" class="cad-hud" hidden></div>
+      <div id="cad-zoom" class="cad-zoom"></div>
+      <input id="cad-input" class="cad-input" type="text" hidden aria-label="標註文字">
+    </div>
+    <div id="cad-layers" class="pop" popover aria-label="圖層">
+      <h3>圖層</h3>
+      <div class="cad-layer-actions"><button type="button" id="cad-layers-all">全部顯示</button><button type="button" id="cad-layers-none">全部隱藏</button></div>
+      <div id="cad-layer-list"></div>
+    </div>
   </section>
 
   <!-- 閱讀頁 -->
@@ -136,7 +206,6 @@
           <button type="button" class="rail-chip" data-group="grp-page" aria-haspopup="true">頁面</button>
           <button type="button" class="rail-chip" data-group="grp-tool" aria-haspopup="true">工具</button>
           <button type="button" class="rail-chip" data-group="grp-export" aria-haspopup="true">匯出</button>
-          <button type="button" class="rail-chip" data-group="grp-cad" aria-haspopup="true" aria-pressed="false">CAD</button>
         </div>
         <input type="file" id="image-input" accept="image/*" hidden>
       </div>
@@ -162,13 +231,6 @@
       </div>
       <div id="grp-tool" class="pop grp-pop" popover aria-label="工具"><h3 class="pop-title">工具</h3></div>
       <div id="grp-export" class="pop grp-pop" popover aria-label="匯出"><h3 class="pop-title">匯出</h3></div>
-      <div id="grp-cad" class="pop grp-pop" popover aria-label="CAD 標註"><h3 class="pop-title">CAD 標註</h3>
-        <button type="button" data-tool="cad-measure" aria-pressed="false" data-tip="量測：拖曳量兩點距離（依圖紙比例換算 mm）"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l14-14 4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></svg><span class="grp-label">量測</span></button>
-        <button type="button" data-tool="cad-dim" aria-pressed="false" data-tip="尺寸線：兩端箭頭＋自動標尺寸"><svg class="ic" viewBox="0 0 24 24"><path d="M3 8v8M21 8v8M3 12h18M3 12l3-2M3 12l3 2M21 12l-3-2M21 12l-3 2"/></svg><span class="grp-label">尺寸線</span></button>
-        <button type="button" data-tool="cad-leader" aria-pressed="false" data-tip="引線：從指示點拖到文字位置，再輸入文字"><svg class="ic" viewBox="0 0 24 24"><path d="M4 20l10-10M4 20l1-5M4 20l5-1M14 10h7"/></svg><span class="grp-label">引線</span></button>
-        <button type="button" data-tool="cad-cloud" aria-pressed="false" data-tip="雲形修訂框：圈出修改處並自動編號"><svg class="ic" viewBox="0 0 24 24"><path d="M6 17a3 3 0 0 1-.5-5.9A4.5 4.5 0 0 1 14 8a4 4 0 0 1 4.5 5A3 3 0 0 1 17 17z"/></svg><span class="grp-label">雲形框</span></button>
-        <button type="button" id="cad-rescale" data-tip="重設比例：下一次量測時重新輸入實際長度"><svg class="ic" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16M8 4v4M16 4v4M8 16v4M16 16v4"/></svg><span class="grp-label">重設比例</span></button>
-      </div>
 
       <div id="more-tools" class="pop grp-pop" popover aria-label="更多工具"><h3 class="pop-title">更多工具</h3>
         <button type="button" data-tool="laser" aria-pressed="false" data-tip="雷射筆"><svg class="ic" viewBox="0 0 24 24"><circle cx="8" cy="16" r="2.6" fill="currentColor"/><path d="M11 13l8-8M15.5 3.5l1 2.5 2.5 1M20.5 9l-2.5-1-1-2.5"/></svg><span class="grp-label">雷射筆</span></button>
