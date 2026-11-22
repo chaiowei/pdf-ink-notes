@@ -9,9 +9,9 @@
   <meta name="google" content="notranslate">
   <title>墨頁 Inkpage</title>
   <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
-  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-DaR1J1g4.js"></script>
+  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-DJdFnZdT.js"></script>
   <link rel="modulepreload" crossorigin href="/pdf-ink-notes/assets/rolldown-runtime-BCiCTKAo.js">
-  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-jn6zjyFj.css">
+  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-ataVeuSC.css">
 <link rel="manifest" href="/pdf-ink-notes/manifest.webmanifest"></head>
 <body>
   <!-- 書櫃 -->
@@ -78,6 +78,7 @@
       <button type="button" id="cad-lib-back" class="icon-btn" aria-label="回筆記書櫃" data-tip="回筆記書櫃"><svg class="ic" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
       <h1 class="brand">CAD 圖面</h1>
       <span class="grow"></span>
+      <button type="button" id="cad-sync" data-tip="同步到 Google Drive（獨立的 CAD 資料夾）">同步</button>
       <button type="button" id="cad-import" class="primary">匯入 DXF／DWG</button>
       <input id="cad-file" type="file" accept="*/*" multiple hidden>
     </header>
@@ -124,6 +125,7 @@
       <button type="button" id="cad-fit">適合畫面</button>
       <button type="button" id="cad-fit-all">全部範圍</button>
       <button type="button" popovertarget="cad-layers">圖層</button>
+      <button type="button" popovertarget="cad-export">匯出</button>
       <label class="muted">單位 <select id="cad-unit" aria-label="圖面單位"></select></label>
       <button type="button" id="cad-clear" class="danger-text">清除標註</button>
     </header>
@@ -132,6 +134,13 @@
       <div id="cad-hud" class="cad-hud" hidden></div>
       <div id="cad-zoom" class="cad-zoom"></div>
       <input id="cad-input" class="cad-input" type="text" hidden aria-label="標註文字">
+    </div>
+    <div id="cad-export" class="pop cad-pop" popover aria-label="匯出">
+      <h3>匯出（含標註）</h3>
+      <button type="button" data-cad-export="pdf-all">PDF：整張圖</button>
+      <button type="button" data-cad-export="pdf-view">PDF：目前畫面範圍</button>
+      <button type="button" data-cad-export="png-all">PNG 圖片：整張圖</button>
+      <button type="button" data-cad-export="png-view">PNG 圖片：目前畫面</button>
     </div>
     <div id="cad-layers" class="pop" popover aria-label="圖層">
       <h3>圖層</h3>
