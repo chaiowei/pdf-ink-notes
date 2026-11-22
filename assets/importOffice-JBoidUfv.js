@@ -1,5 +1,5 @@
 const __vite__mapDeps=(i,m=__vite__mapDeps,d=(m.f||(m.f=["assets/lib-Hn3F9zJl.js","assets/rolldown-runtime-BCiCTKAo.js","assets/exceljs.min-CDmtrTPY.js","assets/es-tscte92X.js","assets/UPNG-P2qJm8HN.js"])))=>i.map(i=>d[i]);
-import{o as e}from"./rolldown-runtime-BCiCTKAo.js";import{s as t}from"./index-CQq_QkfX.js";var n=/\.(docx|xlsx|md|markdown|txt)$/i,r=e=>n.test(e.name),i=e=>String(e??``).replace(/[&<>"]/g,e=>({"&":`&amp;`,"<":`&lt;`,">":`&gt;`,'"':`&quot;`})[e]),a=`
+import{o as e}from"./rolldown-runtime-BCiCTKAo.js";import{s as t}from"./index-DlmCb9sR.js";var n=/\.(docx|xlsx|md|markdown|txt)$/i,r=e=>n.test(e.name),i=e=>String(e??``).replace(/[&<>"]/g,e=>({"&":`&amp;`,"<":`&lt;`,">":`&gt;`,'"':`&quot;`})[e]),a=`
 .doc { font-family: "Noto Sans TC","Noto Sans Thai","Microsoft JhengHei","PingFang TC",system-ui,sans-serif; color: #111; background: #fff; font-size: 15px; line-height: 1.6; padding: 48px 56px; box-sizing: border-box; overflow-wrap: anywhere; }
 .doc h1 { font-size: 28px; margin: 0 0 14px; } .doc h2 { font-size: 22px; margin: 18px 0 10px; } .doc h3 { font-size: 18px; margin: 14px 0 8px; }
 .doc p { margin: 0 0 10px; } .doc ul, .doc ol { margin: 0 0 10px; padding-left: 26px; }

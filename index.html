@@ -9,9 +9,9 @@
   <meta name="google" content="notranslate">
   <title>墨頁 Inkpage</title>
   <link rel="icon" href="/pdf-ink-notes/icon.svg" type="image/svg+xml">
-  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-CQq_QkfX.js"></script>
+  <script type="module" crossorigin src="/pdf-ink-notes/assets/index-DlmCb9sR.js"></script>
   <link rel="modulepreload" crossorigin href="/pdf-ink-notes/assets/rolldown-runtime-BCiCTKAo.js">
-  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-DlBmBUY6.css">
+  <link rel="stylesheet" crossorigin href="/pdf-ink-notes/assets/index-CPCeDsf3.css">
 <link rel="manifest" href="/pdf-ink-notes/manifest.webmanifest"></head>
 <body>
   <!-- 書櫃 -->
@@ -25,7 +25,7 @@
         <button type="button" id="btn-sync" data-state="off" data-tip="同步到 Google Drive">同步</button>
         <button type="button" id="btn-drive-settings" aria-label="同步設定" data-tip="同步設定">⚙</button>
       </div>
-      <input id="file-input" type="file" accept="application/pdf,application/octet-stream,.pdf,.pinnote,.docx,.xlsx,.md,.markdown,.txt,.dxf,.dwg" multiple hidden>
+      <input id="file-input" type="file" accept="*/*" multiple hidden>
     </header>
     <div class="lib-body">
       <aside id="side" class="side" aria-label="書櫃分類">
@@ -136,6 +136,7 @@
           <button type="button" class="rail-chip" data-group="grp-page" aria-haspopup="true">頁面</button>
           <button type="button" class="rail-chip" data-group="grp-tool" aria-haspopup="true">工具</button>
           <button type="button" class="rail-chip" data-group="grp-export" aria-haspopup="true">匯出</button>
+          <button type="button" class="rail-chip" data-group="grp-cad" aria-haspopup="true" aria-pressed="false">CAD</button>
         </div>
         <input type="file" id="image-input" accept="image/*" hidden>
       </div>
@@ -161,15 +162,17 @@
       </div>
       <div id="grp-tool" class="pop grp-pop" popover aria-label="工具"><h3 class="pop-title">工具</h3></div>
       <div id="grp-export" class="pop grp-pop" popover aria-label="匯出"><h3 class="pop-title">匯出</h3></div>
-
-      <div id="more-tools" class="pop grp-pop" popover aria-label="更多工具"><h3 class="pop-title">更多工具</h3>
-        <button type="button" data-tool="laser" aria-pressed="false" data-tip="雷射筆"><svg class="ic" viewBox="0 0 24 24"><circle cx="8" cy="16" r="2.6" fill="currentColor"/><path d="M11 13l8-8M15.5 3.5l1 2.5 2.5 1M20.5 9l-2.5-1-1-2.5"/></svg><span class="grp-label">雷射筆</span></button>
-        <button type="button" data-tool="check" aria-pressed="false" data-tip="檢核框"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.5l3 3 5-6"/></svg><span class="grp-label">檢核框</span></button>
+      <div id="grp-cad" class="pop grp-pop" popover aria-label="CAD 標註"><h3 class="pop-title">CAD 標註</h3>
         <button type="button" data-tool="cad-measure" aria-pressed="false" data-tip="量測：拖曳量兩點距離（依圖紙比例換算 mm）"><svg class="ic" viewBox="0 0 24 24"><path d="M3 17l14-14 4 4L7 21z"/><path d="M7 13l2 2M10 10l2 2M13 7l2 2"/></svg><span class="grp-label">量測</span></button>
         <button type="button" data-tool="cad-dim" aria-pressed="false" data-tip="尺寸線：兩端箭頭＋自動標尺寸"><svg class="ic" viewBox="0 0 24 24"><path d="M3 8v8M21 8v8M3 12h18M3 12l3-2M3 12l3 2M21 12l-3-2M21 12l-3 2"/></svg><span class="grp-label">尺寸線</span></button>
         <button type="button" data-tool="cad-leader" aria-pressed="false" data-tip="引線：從指示點拖到文字位置，再輸入文字"><svg class="ic" viewBox="0 0 24 24"><path d="M4 20l10-10M4 20l1-5M4 20l5-1M14 10h7"/></svg><span class="grp-label">引線</span></button>
         <button type="button" data-tool="cad-cloud" aria-pressed="false" data-tip="雲形修訂框：圈出修改處並自動編號"><svg class="ic" viewBox="0 0 24 24"><path d="M6 17a3 3 0 0 1-.5-5.9A4.5 4.5 0 0 1 14 8a4 4 0 0 1 4.5 5A3 3 0 0 1 17 17z"/></svg><span class="grp-label">雲形框</span></button>
         <button type="button" id="cad-rescale" data-tip="重設比例：下一次量測時重新輸入實際長度"><svg class="ic" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16M8 4v4M16 4v4M8 16v4M16 16v4"/></svg><span class="grp-label">重設比例</span></button>
+      </div>
+
+      <div id="more-tools" class="pop grp-pop" popover aria-label="更多工具"><h3 class="pop-title">更多工具</h3>
+        <button type="button" data-tool="laser" aria-pressed="false" data-tip="雷射筆"><svg class="ic" viewBox="0 0 24 24"><circle cx="8" cy="16" r="2.6" fill="currentColor"/><path d="M11 13l8-8M15.5 3.5l1 2.5 2.5 1M20.5 9l-2.5-1-1-2.5"/></svg><span class="grp-label">雷射筆</span></button>
+        <button type="button" data-tool="check" aria-pressed="false" data-tip="檢核框"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 12.5l3 3 5-6"/></svg><span class="grp-label">檢核框</span></button>
         <button type="button" data-tool="clip" aria-pressed="false" data-tip="剪取"><svg class="ic" viewBox="0 0 24 24"><path d="M7 3v14h14M3 7h14v14"/></svg><span class="grp-label">剪取</span></button>
         <button type="button" id="ink-image" data-tip="插入圖片"><svg class="ic" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="M4 17l5-4.5 3.5 3 3-2.5 4.5 4"/></svg><span class="grp-label">插入圖片</span></button>
         <button type="button" id="ink-paste" hidden data-tip="貼上"><svg class="ic" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V4h6v1M9 11h6M9 15h4"/></svg><span class="grp-label">貼上</span></button>
