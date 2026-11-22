@@ -1,0 +1,1 @@
+async function e(e){let t;try{t=await fetch(`http://127.0.0.1:4777/dwg2dxf`,{method:`POST`,body:await e.arrayBuffer()})}catch{throw Error(`連不到本機 DWG 轉檔服務。請在電腦雙擊 scripts/dwg-server/start-dwg-server.bat，或在 AutoCAD 另存成 DXF`)}if(!t.ok)throw Error(await t.text());return await t.text()}export{e as dwgToDxfText};
